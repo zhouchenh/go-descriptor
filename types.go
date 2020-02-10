@@ -40,9 +40,11 @@ type (
 		GetPrototype() interface{}
 	}
 
+	Type reflect.Type
+
 	Descriptor struct {
-		Prototype interface{}
-		Filler    Filler
+		Type   Type
+		Filler Filler
 	}
 
 	Filler interface {
@@ -100,11 +102,10 @@ type (
 var Root = RootAsPath{}
 
 func (d *Descriptor) Describe(data interface{}) (object interface{}, success, failure int) {
-	if d == nil || d.Prototype == nil || d.Filler == nil {
+	if d == nil || d.Type == nil || d.Filler == nil {
 		return nil, 0, 0x7fff
 	}
-	t := reflect.TypeOf(d.Prototype)
-	newValue := reflect.New(t).Elem()
+	newValue := reflect.New(d.Type).Elem()
 	success, failure = d.Filler.Fill(newValue, data)
 	if !newValue.CanInterface() {
 		return nil, 0, 0x7fff
@@ -113,10 +114,14 @@ func (d *Descriptor) Describe(data interface{}) (object interface{}, success, fa
 	return
 }
 func (d *Descriptor) GetPrototype() interface{} {
-	if d == nil {
+	if d == nil || d.Type == nil {
 		return nil
 	}
-	return d.Prototype
+	e := reflect.New(d.Type).Elem()
+	if !e.CanInterface() {
+		return nil
+	}
+	return e.Interface()
 }
 
 func (f Fillers) Fill(value reflect.Value, data interface{}) (success, failure int) {
@@ -268,6 +273,14 @@ func (vs ValueSources) ExtractObject(data interface{}) (object interface{}, ok b
 		}
 	}
 	return nil, false
+}
+
+func TypeOfNew(ptr interface{}) Type {
+	t := reflect.TypeOf(ptr)
+	if t == nil || t.Kind() != reflect.Ptr {
+		return nil
+	}
+	return t.Elem()
 }
 
 func KindOf(i interface{}) Kind {
