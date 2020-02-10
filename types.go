@@ -37,6 +37,7 @@ const (
 type (
 	Describable interface {
 		Describe(data interface{}) (object interface{}, success, failure int)
+		GetPrototype() interface{}
 	}
 
 	Descriptor struct {
@@ -110,6 +111,12 @@ func (d *Descriptor) Describe(data interface{}) (object interface{}, success, fa
 	}
 	object = newValue.Interface()
 	return
+}
+func (d *Descriptor) GetPrototype() interface{} {
+	if d == nil {
+		return nil
+	}
+	return d.Prototype
 }
 
 func (f Fillers) Fill(value reflect.Value, data interface{}) (success, failure int) {
