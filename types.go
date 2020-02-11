@@ -324,7 +324,7 @@ func valueAtIndex(index, collection reflect.Value) (value reflect.Value, ok bool
 			return reflect.Value{}, false
 		}
 		val := collection.MapIndex(index)
-		if val.IsZero() {
+		if !val.IsValid() {
 			return reflect.Value{}, false
 		}
 		return val, true
@@ -334,7 +334,7 @@ func valueAtIndex(index, collection reflect.Value) (value reflect.Value, ok bool
 		switch kindOfValue(index) {
 		case KindString:
 			val := collection.FieldByName(index.String())
-			if val.IsZero() {
+			if !val.IsValid() {
 				return reflect.Value{}, false
 			}
 			return val, true
