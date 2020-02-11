@@ -283,6 +283,13 @@ func TypeOfNew(ptr interface{}) Type {
 	return t.Elem()
 }
 
+func PointerOf(i interface{}) interface{} {
+	if i == nil {
+		return nil
+	}
+	return &i
+}
+
 func KindOf(i interface{}) Kind {
 	return kindOfValue(reflect.ValueOf(i))
 }
