@@ -329,6 +329,12 @@ func valueAtIndex(index, collection reflect.Value) (value reflect.Value, ok bool
 		}
 		return val, true
 	case KindPtr:
+		if collection.IsNil() {
+			if !collection.CanSet() {
+				return reflect.Value{}, false
+			}
+			collection.Set(reflect.New(collection.Type().Elem()))
+		}
 		return valueAtIndex(index, collection.Elem())
 	case KindStruct:
 		switch kindOfValue(index) {
