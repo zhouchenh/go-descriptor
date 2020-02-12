@@ -287,7 +287,10 @@ func PointerOf(i interface{}) interface{} {
 	if i == nil {
 		return nil
 	}
-	return &i
+	value := reflect.ValueOf(i)
+	pointerValue := reflect.New(value.Type())
+	pointerValue.Elem().Set(value)
+	return pointerValue.Interface()
 }
 
 func KindOf(i interface{}) Kind {
