@@ -154,8 +154,11 @@ func (of ObjectFiller) Fill(value reflect.Value, data interface{}) (success, fai
 	if !ok {
 		return 0, 1
 	}
+	if extractedObject == nil {
+		return 1, 0
+	}
 	extractedValue := reflect.ValueOf(extractedObject)
-	if !extractedValue.Type().AssignableTo(fetchedValue.Type()) {
+	if !extractedValue.IsValid() || !extractedValue.Type().AssignableTo(fetchedValue.Type()) {
 		return 0, 1
 	}
 	fetchedValue.Set(extractedValue)
