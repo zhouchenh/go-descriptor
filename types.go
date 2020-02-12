@@ -228,7 +228,7 @@ func (ak AssignableKinds) AssignObject(i interface{}) (object interface{}, ok bo
 		if !assignableKind.IsAssignable(i) {
 			continue
 		}
-		object, ok = assignableKind.AssignObject(object)
+		object, ok = assignableKind.AssignObject(i)
 		if ok {
 			return
 		}
