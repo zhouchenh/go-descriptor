@@ -275,6 +275,10 @@ func (vs ValueSources) ExtractObject(data interface{}) (object interface{}, ok b
 	return nil, false
 }
 
+func TypeOf(i interface{}) Type {
+	return reflect.TypeOf(i)
+}
+
 func TypeOfNew(ptr interface{}) Type {
 	t := reflect.TypeOf(ptr)
 	if t == nil || t.Kind() != reflect.Ptr {
