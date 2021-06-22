@@ -97,6 +97,8 @@ type (
 	DefaultValue struct {
 		Value interface{}
 	}
+
+	ValueGenerator func(i interface{}) (object interface{}, ok bool)
 )
 
 var Root = RootAsPath{}
@@ -263,6 +265,11 @@ func (oap ObjectAtPath) ExtractObject(data interface{}) (object interface{}, ok 
 
 func (dv DefaultValue) ExtractObject(interface{}) (object interface{}, ok bool) {
 	return dv.Value, true
+}
+
+func (vg ValueGenerator) ExtractObject(data interface{}) (object interface{}, ok bool) {
+	object, ok = vg(data)
+	return
 }
 
 func (vs ValueSources) ExtractObject(data interface{}) (object interface{}, ok bool) {
